@@ -197,7 +197,7 @@ export function GrowingTree({ value, maxValue }: GrowingTreeProps) {
 
         {/* Prompt text when empty */}
         {value === 0 && (
-          <text x="100" y="70" textAnchor="middle" className="fill-slate-500 text-[10px] font-medium">
+          <text x="100" y="70" textAnchor="middle" fill="#162521" opacity="0.4" fontSize="10" fontWeight="500">
             Drag slider to grow
           </text>
         )}

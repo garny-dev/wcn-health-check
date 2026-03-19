@@ -2,21 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display&display=swap');
 
 * {
   box-sizing: border-box;
 }
 
+:root {
+  --wcn-dark-green: #162521;
+  --wcn-off-white: #FFFDF1;
+  --wcn-orange: #F49C55;
+  --wcn-light-orange: #FDD07C;
+  --wcn-green: #3B6D61;
+  --wcn-teal: #85CFB9;
+  --wcn-burnt-orange: #48221E;
+  --wcn-darker-green: #0C1614;
+}
+
 body {
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  letter-spacing: -0.01em;
+  background-color: var(--wcn-off-white);
+  color: var(--wcn-dark-green);
 }
 
 h1, h2, h3, h4, h5, h6 {
-  letter-spacing: -0.02em;
+  font-family: 'DM Serif Display', Georgia, serif;
+  letter-spacing: -0.01em;
 }
 
 /* Custom animations */
@@ -73,26 +86,26 @@ h1, h2, h3, h4, h5, h6 {
   appearance: none;
   width: 20px;
   height: 20px;
-  background: linear-gradient(135deg, #10b981, #14b8a6);
+  background: var(--wcn-orange);
   border-radius: 50%;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 2px 8px rgba(244, 156, 85, 0.4);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .slider-thumb::-webkit-slider-thumb:hover {
   transform: scale(1.15);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.6);
+  box-shadow: 0 4px 12px rgba(244, 156, 85, 0.6);
 }
 
 .slider-thumb::-moz-range-thumb {
   width: 20px;
   height: 20px;
-  background: linear-gradient(135deg, #10b981, #14b8a6);
+  background: var(--wcn-orange);
   border-radius: 50%;
   cursor: pointer;
   border: none;
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 2px 8px rgba(244, 156, 85, 0.4);
 }
 
 /* Smooth scrollbar */
@@ -102,20 +115,20 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.5);
+  background: rgba(22, 37, 33, 0.1);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(100, 116, 139, 0.5);
+  background: rgba(22, 37, 33, 0.3);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 116, 139, 0.8);
+  background: rgba(22, 37, 33, 0.5);
 }
 
 /* Selection color */
 ::selection {
-  background: rgba(16, 185, 129, 0.3);
-  color: white;
+  background: rgba(133, 207, 185, 0.4);
+  color: var(--wcn-dark-green);
 }
