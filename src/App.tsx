@@ -152,37 +152,8 @@ function App() {
               <p className="text-slate-400 text-sm hidden sm:block">{t.questionDesc}</p>
             </div>
             
-            {/* Growing Tree + Slider */}
-            <div className="bg-slate-800/40 rounded-xl p-4 border border-slate-700/30 mb-4">
-              <GrowingTree value={sliderValue} maxValue={12} />
-              
-              {/* Slider */}
-              <div className="mt-4 px-4">
-                <input
-                  type="range"
-                  min="0"
-                  max="12"
-                  step="1"
-                  value={sliderValue}
-                  onChange={(e) => setSliderValue(parseInt(e.target.value))}
-                  className="w-full h-2 bg-slate-700 rounded-full appearance-none cursor-pointer slider-thumb"
-                />
-                <div className="flex justify-between mt-2 text-xs font-medium">
-                  <span className="text-slate-500">{t.start}</span>
-                  {stages.map((stage) => (
-                    <span 
-                      key={stage.level}
-                      className={`transition-colors ${selected === stage.level ? 'text-emerald-400' : 'text-slate-500'}`}
-                    >
-                      {stage.icon}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Stage Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+            {/* Stage Cards + Tree */}
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-3">
               {stages.map((stage) => (
                 <div
                   key={stage.level}
@@ -248,6 +219,34 @@ function App() {
                   )}
                 </div>
               ))}
+              
+              {/* Tree Card */}
+              <div className="relative rounded-2xl p-4 bg-gradient-to-br from-slate-800/60 to-slate-900/60 border-2 border-slate-700/50 flex flex-col items-center justify-center md:col-span-2 xl:col-span-1">
+                <GrowingTree value={sliderValue} maxValue={12} />
+                
+                {/* Slider */}
+                <div className="w-full mt-2 px-2">
+                  <input
+                    type="range"
+                    min="0"
+                    max="12"
+                    step="1"
+                    value={sliderValue}
+                    onChange={(e) => setSliderValue(parseInt(e.target.value))}
+                    className="w-full h-2 bg-slate-700 rounded-full appearance-none cursor-pointer slider-thumb"
+                  />
+                  <div className="flex justify-between mt-1 text-[10px] font-medium text-slate-500">
+                    {stages.map((stage) => (
+                      <span 
+                        key={stage.level}
+                        className={`transition-colors ${selected === stage.level ? 'text-emerald-400' : ''}`}
+                      >
+                        {stage.icon}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Notes Section - appears after selection */}
