@@ -14,8 +14,8 @@ const stages: Stage[] = [
   {
     level: 1,
     name: 'Planting',
-    gradient: 'from-amber-600 via-amber-700 to-amber-800',
-    bgGradient: 'bg-gradient-to-br from-amber-900/20 to-amber-950/40',
+    gradient: 'from-amber-700 via-amber-800 to-stone-700',
+    bgGradient: 'bg-gradient-to-br from-amber-950/30 to-stone-950/40',
     icon: '🌱',
     title: 'Seeds of Potential',
     description: [
@@ -28,8 +28,8 @@ const stages: Stage[] = [
   {
     level: 2,
     name: 'Seedling',
-    gradient: 'from-orange-500 via-orange-600 to-amber-700',
-    bgGradient: 'bg-gradient-to-br from-orange-900/20 to-orange-950/40',
+    gradient: 'from-lime-600 via-green-600 to-emerald-700',
+    bgGradient: 'bg-gradient-to-br from-lime-950/30 to-green-950/40',
     icon: '🌿',
     title: 'Taking Root',
     description: [
@@ -42,8 +42,8 @@ const stages: Stage[] = [
   {
     level: 3,
     name: 'Growing',
-    gradient: 'from-emerald-500 via-teal-600 to-cyan-700',
-    bgGradient: 'bg-gradient-to-br from-emerald-900/20 to-teal-950/40',
+    gradient: 'from-emerald-500 via-green-500 to-teal-600',
+    bgGradient: 'bg-gradient-to-br from-emerald-950/30 to-teal-950/40',
     icon: '🌳',
     title: 'Branching Out',
     description: [
@@ -56,9 +56,9 @@ const stages: Stage[] = [
   {
     level: 4,
     name: 'Harvesting',
-    gradient: 'from-yellow-400 via-amber-500 to-orange-500',
-    bgGradient: 'bg-gradient-to-br from-yellow-900/20 to-amber-950/40',
-    icon: '🌾',
+    gradient: 'from-green-500 via-emerald-400 to-teal-400',
+    bgGradient: 'bg-gradient-to-br from-green-950/30 to-emerald-950/40',
+    icon: '🍎',
     title: 'Full Bloom',
     description: [
       'Clear 2-3 year strategy',
