@@ -6,163 +6,122 @@ export function GrowingTree({ stage }: GrowingTreeProps) {
   const s = stage || 0
   
   return (
-    <div className="relative w-full h-48 flex items-end justify-center">
+    <div className="relative w-full h-40 flex items-end justify-center">
       <svg 
-        viewBox="0 0 200 160" 
+        viewBox="0 0 200 140" 
         className="w-full h-full max-w-xs"
         style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.3))' }}
       >
         {/* Ground */}
         <ellipse 
           cx="100" 
-          cy="150" 
+          cy="130" 
           rx="80" 
           ry="10" 
-          className="fill-amber-900/60"
+          className="fill-amber-900/60 transition-all duration-500"
         />
         
         {/* Soil mound */}
         <ellipse 
           cx="100" 
-          cy="145" 
+          cy="125" 
           rx="40" 
           ry="8" 
-          className="fill-amber-800/80"
+          className="fill-amber-800/80 transition-all duration-500"
         />
 
-        {/* Stage 1: Seed/Sprout */}
-        {s >= 1 && (
-          <g className="animate-grow-up" style={{ transformOrigin: '100px 140px' }}>
-            {/* Stem */}
-            <path
-              d="M100 140 L100 125"
-              className="stroke-green-600"
-              strokeWidth="3"
-              strokeLinecap="round"
-              fill="none"
-            />
-            {/* Small leaves */}
-            <ellipse cx="95" cy="128" rx="6" ry="4" className="fill-green-500" transform="rotate(-30 95 128)" />
-            <ellipse cx="105" cy="128" rx="6" ry="4" className="fill-green-500" transform="rotate(30 105 128)" />
-          </g>
-        )}
+        {/* Main trunk - grows with stages */}
+        <rect
+          x="97"
+          y={125 - (s * 20)}
+          width="6"
+          height={s * 20}
+          rx="3"
+          className="fill-green-700 transition-all duration-500 ease-out"
+          style={{ transformOrigin: '100px 125px' }}
+        />
 
-        {/* Stage 2: Seedling - taller with more leaves */}
-        {s >= 2 && (
-          <g className="animate-grow-up" style={{ transformOrigin: '100px 125px', animationDelay: '0.2s' }}>
-            {/* Extended stem */}
-            <path
-              d="M100 125 L100 100"
-              className="stroke-green-600"
-              strokeWidth="4"
-              strokeLinecap="round"
-              fill="none"
-            />
-            {/* More leaves */}
-            <ellipse cx="90" cy="115" rx="10" ry="5" className="fill-green-400" transform="rotate(-40 90 115)" />
-            <ellipse cx="110" cy="115" rx="10" ry="5" className="fill-green-400" transform="rotate(40 110 115)" />
-            <ellipse cx="92" cy="105" rx="8" ry="4" className="fill-lime-400" transform="rotate(-25 92 105)" />
-            <ellipse cx="108" cy="105" rx="8" ry="4" className="fill-lime-400" transform="rotate(25 108 105)" />
-          </g>
-        )}
+        {/* Stage 1+: Small leaves */}
+        <g 
+          className="transition-all duration-500"
+          style={{ 
+            opacity: s >= 1 ? 1 : 0,
+            transform: `scale(${s >= 1 ? 1 : 0})`,
+            transformOrigin: '100px 115px'
+          }}
+        >
+          <ellipse cx="90" cy="112" rx="8" ry="5" className="fill-green-500" transform="rotate(-35 90 112)" />
+          <ellipse cx="110" cy="112" rx="8" ry="5" className="fill-green-500" transform="rotate(35 110 112)" />
+        </g>
 
-        {/* Stage 3: Growing - branches forming */}
-        {s >= 3 && (
-          <g className="animate-grow-up" style={{ transformOrigin: '100px 100px', animationDelay: '0.4s' }}>
-            {/* Main trunk */}
-            <path
-              d="M100 100 L100 65"
-              className="stroke-green-700"
-              strokeWidth="6"
-              strokeLinecap="round"
-              fill="none"
-            />
-            {/* Branches */}
-            <path
-              d="M100 85 L75 65"
-              className="stroke-green-600"
-              strokeWidth="4"
-              strokeLinecap="round"
-              fill="none"
-            />
-            <path
-              d="M100 85 L125 65"
-              className="stroke-green-600"
-              strokeWidth="4"
-              strokeLinecap="round"
-              fill="none"
-            />
-            <path
-              d="M100 75 L85 55"
-              className="stroke-green-600"
-              strokeWidth="3"
-              strokeLinecap="round"
-              fill="none"
-            />
-            <path
-              d="M100 75 L115 55"
-              className="stroke-green-600"
-              strokeWidth="3"
-              strokeLinecap="round"
-              fill="none"
-            />
-            {/* Canopy leaves */}
-            <circle cx="75" cy="60" r="12" className="fill-emerald-500" />
-            <circle cx="125" cy="60" r="12" className="fill-emerald-500" />
-            <circle cx="85" cy="50" r="10" className="fill-green-400" />
-            <circle cx="115" cy="50" r="10" className="fill-green-400" />
-            <circle cx="100" cy="55" r="14" className="fill-emerald-400" />
-          </g>
-        )}
+        {/* Stage 2+: More leaves */}
+        <g 
+          className="transition-all duration-500"
+          style={{ 
+            opacity: s >= 2 ? 1 : 0,
+            transform: `scale(${s >= 2 ? 1 : 0})`,
+            transformOrigin: '100px 95px'
+          }}
+        >
+          <ellipse cx="85" cy="95" rx="12" ry="6" className="fill-lime-500" transform="rotate(-40 85 95)" />
+          <ellipse cx="115" cy="95" rx="12" ry="6" className="fill-lime-500" transform="rotate(40 115 95)" />
+          <ellipse cx="92" cy="85" rx="10" ry="5" className="fill-green-400" transform="rotate(-25 92 85)" />
+          <ellipse cx="108" cy="85" rx="10" ry="5" className="fill-green-400" transform="rotate(25 108 85)" />
+        </g>
 
-        {/* Stage 4: Harvesting - full tree with fruit */}
-        {s >= 4 && (
-          <g className="animate-grow-up" style={{ transformOrigin: '100px 60px', animationDelay: '0.6s' }}>
-            {/* Fuller canopy */}
-            <circle cx="65" cy="55" r="10" className="fill-green-500" />
-            <circle cx="135" cy="55" r="10" className="fill-green-500" />
-            <circle cx="100" cy="40" r="16" className="fill-emerald-400" />
-            <circle cx="75" cy="45" r="12" className="fill-teal-400" />
-            <circle cx="125" cy="45" r="12" className="fill-teal-400" />
-            
-            {/* Fruits! */}
-            <circle cx="70" cy="62" r="6" className="fill-red-500 animate-bounce-fruit" style={{animationDelay: '0.8s'}} />
-            <circle cx="130" cy="62" r="6" className="fill-red-500 animate-bounce-fruit" style={{animationDelay: '1s'}} />
-            <circle cx="90" cy="48" r="5" className="fill-red-400 animate-bounce-fruit" style={{animationDelay: '1.2s'}} />
-            <circle cx="110" cy="48" r="5" className="fill-red-400 animate-bounce-fruit" style={{animationDelay: '1.4s'}} />
-            <circle cx="100" cy="35" r="6" className="fill-red-500 animate-bounce-fruit" style={{animationDelay: '1.6s'}} />
-            
-            {/* Fruit highlights */}
-            <circle cx="68" cy="60" r="2" className="fill-red-300/60" />
-            <circle cx="128" cy="60" r="2" className="fill-red-300/60" />
-            <circle cx="98" cy="33" r="2" className="fill-red-300/60" />
-          </g>
-        )}
+        {/* Stage 3+: Full canopy */}
+        <g 
+          className="transition-all duration-500"
+          style={{ 
+            opacity: s >= 3 ? 1 : 0,
+            transform: `scale(${s >= 3 ? 1 : 0})`,
+            transformOrigin: '100px 60px'
+          }}
+        >
+          {/* Branches */}
+          <path d="M100 70 L75 50" className="stroke-green-600" strokeWidth="4" strokeLinecap="round" fill="none" />
+          <path d="M100 70 L125 50" className="stroke-green-600" strokeWidth="4" strokeLinecap="round" fill="none" />
+          
+          {/* Canopy */}
+          <circle cx="75" cy="45" r="15" className="fill-emerald-500" />
+          <circle cx="125" cy="45" r="15" className="fill-emerald-500" />
+          <circle cx="100" cy="40" r="18" className="fill-emerald-400" />
+          <circle cx="85" cy="55" r="12" className="fill-green-400" />
+          <circle cx="115" cy="55" r="12" className="fill-green-400" />
+        </g>
 
-        {/* Stage labels */}
+        {/* Stage 4: Fruits */}
+        <g 
+          className="transition-all duration-700"
+          style={{ 
+            opacity: s >= 4 ? 1 : 0,
+            transform: `scale(${s >= 4 ? 1 : 0})`,
+            transformOrigin: '100px 50px'
+          }}
+        >
+          <circle cx="70" cy="52" r="7" className="fill-red-500" />
+          <circle cx="68" cy="50" r="2" className="fill-red-300/60" />
+          
+          <circle cx="130" cy="52" r="7" className="fill-red-500" />
+          <circle cx="128" cy="50" r="2" className="fill-red-300/60" />
+          
+          <circle cx="90" cy="38" r="6" className="fill-red-400" />
+          <circle cx="88" cy="36" r="2" className="fill-red-300/60" />
+          
+          <circle cx="110" cy="38" r="6" className="fill-red-400" />
+          <circle cx="108" cy="36" r="2" className="fill-red-300/60" />
+          
+          <circle cx="100" cy="28" r="7" className="fill-red-500" />
+          <circle cx="98" cy="26" r="2" className="fill-red-300/60" />
+        </g>
+
+        {/* Prompt text when empty */}
         {s === 0 && (
-          <text x="100" y="90" textAnchor="middle" className="fill-slate-500 text-xs font-medium">
-            Select a stage to grow
+          <text x="100" y="70" textAnchor="middle" className="fill-slate-500 text-[10px] font-medium">
+            Drag slider to grow
           </text>
         )}
       </svg>
-      
-      {/* Stage indicator */}
-      {s > 0 && (
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-6 text-center">
-          <div className="text-xs font-medium text-slate-400">Growth Stage</div>
-          <div className="flex gap-1 mt-1 justify-center">
-            {[1,2,3,4].map(n => (
-              <div 
-                key={n} 
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                  n <= s ? 'bg-emerald-500 scale-100' : 'bg-slate-700 scale-75'
-                }`}
-              />
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   )
 }

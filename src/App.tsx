@@ -141,21 +141,45 @@ function App() {
         <div className="max-w-6xl mx-auto">
           <div className="bg-slate-900/60 backdrop-blur-xl rounded-3xl p-6 md:p-10 border border-slate-700/50 shadow-2xl shadow-black/20">
             
-            {/* Question Header + Tree */}
-            <div className="flex flex-col lg:flex-row lg:items-start gap-6 mb-8">
-              <div className="flex items-center gap-4 flex-1">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-2xl shadow-lg shadow-emerald-500/20">
-                  📋
-                </div>
-                <div>
-                  <h2 className="text-2xl md:text-3xl font-bold text-white">Strategic Plan</h2>
-                  <p className="text-slate-400 text-sm mt-1">How well does your organization plan for the future?</p>
-                </div>
+            {/* Question Header - Single Row */}
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-lg shadow-lg shadow-emerald-500/20">
+                📋
               </div>
+              <h2 className="text-xl md:text-2xl font-bold text-white">Strategic Plan</h2>
+              <span className="text-slate-500 hidden sm:inline">—</span>
+              <p className="text-slate-400 text-sm hidden sm:block">How well does your organization plan for the future?</p>
+            </div>
+            
+            {/* Growing Tree + Slider */}
+            <div className="bg-slate-800/40 rounded-2xl p-6 border border-slate-700/30 mb-6">
+              <GrowingTree stage={selected} />
               
-              {/* Growing Tree Visualization */}
-              <div className="lg:w-64 bg-slate-800/40 rounded-2xl p-4 border border-slate-700/30">
-                <GrowingTree stage={selected} />
+              {/* Slider */}
+              <div className="mt-6 px-4">
+                <input
+                  type="range"
+                  min="0"
+                  max="4"
+                  step="1"
+                  value={selected || 0}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value)
+                    setSelected(val === 0 ? null : val)
+                  }}
+                  className="w-full h-2 bg-slate-700 rounded-full appearance-none cursor-pointer slider-thumb"
+                />
+                <div className="flex justify-between mt-2 text-xs font-medium">
+                  <span className="text-slate-500">Start</span>
+                  {stages.map((stage) => (
+                    <span 
+                      key={stage.level}
+                      className={`transition-colors ${selected === stage.level ? 'text-emerald-400' : 'text-slate-500'}`}
+                    >
+                      {stage.icon}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
 
