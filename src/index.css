@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+:root {
+  --planting: #c4a77d;
+  --seedling: #e8a849;
+  --growing: #d4873b;
+  --harvesting: #c66b27;
+}
+
+body {
+  @apply bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 min-h-screen;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(234, 179, 8, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(234, 179, 8, 0.6); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+.stage-card {
+  @apply relative overflow-hidden rounded-2xl p-6 cursor-pointer transition-all duration-300;
+  @apply border-2 border-transparent;
+}
+
+.stage-card:hover {
+  @apply scale-105;
+  animation: float 2s ease-in-out infinite;
+}
+
+.stage-card.selected {
+  @apply border-yellow-400;
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.stage-card::before {
+  content: '';
+  @apply absolute inset-0 opacity-0 transition-opacity duration-300;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+}
+
+.stage-card:hover::before {
+  @apply opacity-100;
+}
+
+.progress-bar {
+  @apply h-2 rounded-full bg-slate-700 overflow-hidden;
+}
+
+.progress-fill {
+  @apply h-full rounded-full transition-all duration-500 ease-out;
+  background: linear-gradient(90deg, var(--planting), var(--seedling), var(--growing), var(--harvesting));
+}
