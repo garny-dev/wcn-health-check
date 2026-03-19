@@ -71,6 +71,7 @@ function App() {
   const [showSummary, setShowSummary] = useState(false)
   const [lang, setLang] = useState<Language>('en')
   const [langDropdownOpen, setLangDropdownOpen] = useState(false)
+  const [notes, setNotes] = useState<Record<number, string>>({})
 
   const t = translations[lang]
   const totalQuestions = categoryData.questions.length
@@ -328,6 +329,22 @@ function App() {
                   </div>
                 </div>
               </div>
+
+              {/* Notes text box */}
+              {currentAnswer > 0 && (
+                <div className="mt-4 animate-fade-in">
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Why did you select <span className="text-emerald-400">Level {currentAnswer}</span> for {question.title}? (optional)
+                  </label>
+                  <textarea
+                    value={notes[question.id] || ''}
+                    onChange={(e) => setNotes({ ...notes, [question.id]: e.target.value })}
+                    placeholder="Add any context or notes about your selection..."
+                    rows={2}
+                    className="w-full px-4 py-3 rounded-xl bg-slate-800/80 border border-slate-700/50 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all resize-none text-sm"
+                  />
+                </div>
+              )}
 
               {/* Navigation */}
               <div className="flex justify-between items-center mt-6 pt-4 border-t border-slate-700/50">
