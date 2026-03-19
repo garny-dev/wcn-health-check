@@ -1,127 +1,205 @@
 interface GrowingTreeProps {
-  value: number
+  value: number  // 0-12
   maxValue: number
 }
 
 export function GrowingTree({ value, maxValue }: GrowingTreeProps) {
+  // Normalize to 0-1 range for smooth interpolation
   const t = value / maxValue
-  const stage = Math.ceil((value / maxValue) * 4)
   
-  // Trunk height grows with progress
-  const trunkHeight = 10 + t * 70
-  const trunkWidth = 3 + t * 3
+  // Calculate stage progress (0-4 continuous)
+  const stageProgress = t * 4
+  
+  // Helper to get opacity/scale for each stage element
+  const getStageVisibility = (stage: number) => {
+    const stageStart = (stage - 1) / 4
+    const stageEnd = stage / 4
+    const progress = Math.max(0, Math.min(1, (t - stageStart) / (stageEnd - stageStart)))
+    return progress
+  }
+  
+  // Trunk height grows continuously
+  const trunkHeight = Math.min(80, t * 100)
   
   return (
-    <div className="relative w-full h-36 flex items-end justify-center">
+    <div className="relative w-full h-40 flex items-end justify-center">
       <svg 
-        viewBox="0 0 200 120" 
-        className="w-full h-full max-w-[280px]"
+        viewBox="0 0 200 140" 
+        className="w-full h-full max-w-xs"
+        style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.3))' }}
       >
-        {/* Ground line */}
-        <line x1="40" y1="115" x2="160" y2="115" stroke="#334155" strokeWidth="2" strokeLinecap="round" />
+        {/* Ground */}
+        <ellipse 
+          cx="100" 
+          cy="130" 
+          rx="80" 
+          ry="10" 
+          className="fill-amber-900/60"
+        />
         
-        {/* Soil/pot area */}
-        <ellipse cx="100" cy="115" rx="25" ry="5" fill="#1e293b" />
+        {/* Soil mound */}
+        <ellipse 
+          cx="100" 
+          cy="125" 
+          rx="40" 
+          ry="8" 
+          className="fill-amber-800/80"
+        />
 
-        {value === 0 ? (
-          /* Empty state - seed */
-          <g>
-            <ellipse cx="100" cy="110" rx="6" ry="4" fill="#78716c" />
-            <text x="100" y="70" textAnchor="middle" fill="#64748b" fontSize="10" fontWeight="500">
-              Drag to grow
-            </text>
+        {/* Main trunk - grows continuously */}
+        {value > 0 && (
+          <rect
+            x="97"
+            y={125 - trunkHeight}
+            width={4 + Math.min(4, stageProgress)}
+            height={trunkHeight}
+            rx="3"
+            className="fill-green-700 transition-all duration-200 ease-out"
+          />
+        )}
+
+        {/* Stage 1: First sprout leaves */}
+        <g 
+          className="transition-all duration-300"
+          style={{ 
+            opacity: getStageVisibility(1),
+            transform: `scale(${0.5 + getStageVisibility(1) * 0.5})`,
+            transformOrigin: '100px 115px'
+          }}
+        >
+          <ellipse cx="90" cy="112" rx="8" ry="5" className="fill-green-500" transform="rotate(-35 90 112)" />
+          <ellipse cx="110" cy="112" rx="8" ry="5" className="fill-green-500" transform="rotate(35 110 112)" />
+        </g>
+
+        {/* Stage 1.5: Additional small leaves */}
+        <g 
+          className="transition-all duration-300"
+          style={{ 
+            opacity: Math.max(0, (stageProgress - 0.5) * 2),
+            transform: `scale(${Math.max(0, (stageProgress - 0.5))})`,
+            transformOrigin: '100px 105px'
+          }}
+        >
+          <ellipse cx="95" cy="105" rx="6" ry="4" className="fill-lime-500" transform="rotate(-20 95 105)" />
+          <ellipse cx="105" cy="105" rx="6" ry="4" className="fill-lime-500" transform="rotate(20 105 105)" />
+        </g>
+
+        {/* Stage 2: More leaves growing */}
+        <g 
+          className="transition-all duration-300"
+          style={{ 
+            opacity: getStageVisibility(2),
+            transform: `scale(${0.5 + getStageVisibility(2) * 0.5})`,
+            transformOrigin: '100px 90px'
+          }}
+        >
+          <ellipse cx="82" cy="92" rx="12" ry="6" className="fill-lime-500" transform="rotate(-40 82 92)" />
+          <ellipse cx="118" cy="92" rx="12" ry="6" className="fill-lime-500" transform="rotate(40 118 92)" />
+        </g>
+
+        {/* Stage 2.5: Upper leaves */}
+        <g 
+          className="transition-all duration-300"
+          style={{ 
+            opacity: Math.max(0, (stageProgress - 1.5) * 2),
+            transform: `scale(${Math.max(0, Math.min(1, stageProgress - 1.5))})`,
+            transformOrigin: '100px 80px'
+          }}
+        >
+          <ellipse cx="88" cy="80" rx="10" ry="5" className="fill-green-400" transform="rotate(-25 88 80)" />
+          <ellipse cx="112" cy="80" rx="10" ry="5" className="fill-green-400" transform="rotate(25 112 80)" />
+        </g>
+
+        {/* Stage 3: Branches forming */}
+        <g 
+          className="transition-all duration-300"
+          style={{ 
+            opacity: getStageVisibility(3),
+            transform: `scale(${0.5 + getStageVisibility(3) * 0.5})`,
+            transformOrigin: '100px 60px'
+          }}
+        >
+          {/* Branches */}
+          <path d="M100 65 L72 45" className="stroke-green-600" strokeWidth="4" strokeLinecap="round" fill="none" />
+          <path d="M100 65 L128 45" className="stroke-green-600" strokeWidth="4" strokeLinecap="round" fill="none" />
+          
+          {/* Side canopy */}
+          <circle cx="70" cy="42" r="14" className="fill-emerald-500" />
+          <circle cx="130" cy="42" r="14" className="fill-emerald-500" />
+        </g>
+
+        {/* Stage 3.5: Center canopy */}
+        <g 
+          className="transition-all duration-300"
+          style={{ 
+            opacity: Math.max(0, (stageProgress - 2.5) * 2),
+            transform: `scale(${Math.max(0, Math.min(1, stageProgress - 2.5))})`,
+            transformOrigin: '100px 45px'
+          }}
+        >
+          <circle cx="100" cy="38" r="18" className="fill-emerald-400" />
+          <circle cx="85" cy="52" r="12" className="fill-green-400" />
+          <circle cx="115" cy="52" r="12" className="fill-green-400" />
+        </g>
+
+        {/* Stage 4: Fruits appearing one by one */}
+        <g className="transition-all duration-300">
+          {/* Fruit 1 */}
+          <g style={{ 
+            opacity: Math.max(0, Math.min(1, (stageProgress - 3) * 3)),
+            transform: `scale(${Math.max(0, Math.min(1, (stageProgress - 3) * 3))})`,
+            transformOrigin: '68px 50px'
+          }}>
+            <circle cx="68" cy="50" r="7" className="fill-red-500" />
+            <circle cx="66" cy="48" r="2" className="fill-red-300/60" />
           </g>
-        ) : (
-          <g>
-            {/* Main trunk */}
-            <line 
-              x1="100" 
-              y1="115" 
-              x2="100" 
-              y2={115 - trunkHeight}
-              stroke="#15803d" 
-              strokeWidth={trunkWidth}
-              strokeLinecap="round"
-              className="transition-all duration-300"
-            />
-
-            {/* Stage 1: First branches with small leaves */}
-            {stage >= 1 && (
-              <g className="transition-all duration-300" style={{ opacity: Math.min(1, t * 4) }}>
-                {/* Left branch */}
-                <line x1="100" y1="100" x2="75" y2="92" stroke="#15803d" strokeWidth="2" strokeLinecap="round" />
-                <ellipse cx="70" cy="90" rx="8" ry="5" fill="#22c55e" transform="rotate(-20 70 90)" />
-                
-                {/* Right branch */}
-                <line x1="100" y1="100" x2="125" y2="92" stroke="#15803d" strokeWidth="2" strokeLinecap="round" />
-                <ellipse cx="130" cy="90" rx="8" ry="5" fill="#22c55e" transform="rotate(20 130 90)" />
-              </g>
-            )}
-
-            {/* Stage 2: More branches, fuller */}
-            {stage >= 2 && (
-              <g className="transition-all duration-300" style={{ opacity: Math.min(1, (t - 0.25) * 4) }}>
-                {/* Middle branches */}
-                <line x1="100" y1="85" x2="68" y2="75" stroke="#15803d" strokeWidth="2" strokeLinecap="round" />
-                <ellipse cx="62" cy="72" rx="10" ry="6" fill="#16a34a" transform="rotate(-25 62 72)" />
-                <ellipse cx="72" cy="78" rx="7" ry="4" fill="#22c55e" transform="rotate(-15 72 78)" />
-                
-                <line x1="100" y1="85" x2="132" y2="75" stroke="#15803d" strokeWidth="2" strokeLinecap="round" />
-                <ellipse cx="138" cy="72" rx="10" ry="6" fill="#16a34a" transform="rotate(25 138 72)" />
-                <ellipse cx="128" cy="78" rx="7" ry="4" fill="#22c55e" transform="rotate(15 128 78)" />
-              </g>
-            )}
-
-            {/* Stage 3: Upper canopy */}
-            {stage >= 3 && (
-              <g className="transition-all duration-300" style={{ opacity: Math.min(1, (t - 0.5) * 4) }}>
-                {/* Upper branches */}
-                <line x1="100" y1="65" x2="72" y2="52" stroke="#15803d" strokeWidth="2" strokeLinecap="round" />
-                <ellipse cx="65" cy="48" rx="12" ry="7" fill="#16a34a" transform="rotate(-30 65 48)" />
-                
-                <line x1="100" y1="65" x2="128" y2="52" stroke="#15803d" strokeWidth="2" strokeLinecap="round" />
-                <ellipse cx="135" cy="48" rx="12" ry="7" fill="#16a34a" transform="rotate(30 135 48)" />
-                
-                {/* Top */}
-                <line x1="100" y1="55" x2="100" y2="38" stroke="#15803d" strokeWidth="2" strokeLinecap="round" />
-                <ellipse cx="100" cy="32" rx="14" ry="8" fill="#22c55e" />
-                <ellipse cx="90" cy="38" rx="8" ry="5" fill="#16a34a" transform="rotate(-10 90 38)" />
-                <ellipse cx="110" cy="38" rx="8" ry="5" fill="#16a34a" transform="rotate(10 110 38)" />
-              </g>
-            )}
-
-            {/* Stage 4: Coffee cherries! */}
-            {stage >= 4 && (
-              <g className="transition-all duration-300" style={{ opacity: Math.min(1, (t - 0.75) * 4) }}>
-                {/* Cherries on branches - red coffee berries */}
-                <circle cx="66" cy="95" r="4" fill="#dc2626" />
-                <circle cx="72" cy="92" r="3" fill="#ef4444" />
-                <circle cx="62" cy="90" r="3" fill="#dc2626" />
-                
-                <circle cx="134" cy="95" r="4" fill="#dc2626" />
-                <circle cx="128" cy="92" r="3" fill="#ef4444" />
-                <circle cx="138" cy="90" r="3" fill="#dc2626" />
-                
-                <circle cx="58" cy="76" r="4" fill="#dc2626" />
-                <circle cx="64" cy="73" r="3" fill="#ef4444" />
-                
-                <circle cx="142" cy="76" r="4" fill="#dc2626" />
-                <circle cx="136" cy="73" r="3" fill="#ef4444" />
-                
-                <circle cx="60" cy="52" r="4" fill="#dc2626" />
-                <circle cx="140" cy="52" r="4" fill="#dc2626" />
-                
-                <circle cx="95" cy="28" r="3" fill="#ef4444" />
-                <circle cx="105" cy="28" r="3" fill="#ef4444" />
-                <circle cx="100" cy="25" r="4" fill="#dc2626" />
-                
-                {/* Highlights on cherries */}
-                <circle cx="65" cy="94" r="1.5" fill="#fca5a5" opacity="0.6" />
-                <circle cx="133" cy="94" r="1.5" fill="#fca5a5" opacity="0.6" />
-                <circle cx="99" cy="24" r="1.5" fill="#fca5a5" opacity="0.6" />
-              </g>
-            )}
+          
+          {/* Fruit 2 */}
+          <g style={{ 
+            opacity: Math.max(0, Math.min(1, (stageProgress - 3.2) * 3)),
+            transform: `scale(${Math.max(0, Math.min(1, (stageProgress - 3.2) * 3))})`,
+            transformOrigin: '132px 50px'
+          }}>
+            <circle cx="132" cy="50" r="7" className="fill-red-500" />
+            <circle cx="130" cy="48" r="2" className="fill-red-300/60" />
           </g>
+          
+          {/* Fruit 3 */}
+          <g style={{ 
+            opacity: Math.max(0, Math.min(1, (stageProgress - 3.4) * 3)),
+            transform: `scale(${Math.max(0, Math.min(1, (stageProgress - 3.4) * 3))})`,
+            transformOrigin: '88px 36px'
+          }}>
+            <circle cx="88" cy="36" r="6" className="fill-red-400" />
+            <circle cx="86" cy="34" r="2" className="fill-red-300/60" />
+          </g>
+          
+          {/* Fruit 4 */}
+          <g style={{ 
+            opacity: Math.max(0, Math.min(1, (stageProgress - 3.6) * 3)),
+            transform: `scale(${Math.max(0, Math.min(1, (stageProgress - 3.6) * 3))})`,
+            transformOrigin: '112px 36px'
+          }}>
+            <circle cx="112" cy="36" r="6" className="fill-red-400" />
+            <circle cx="110" cy="34" r="2" className="fill-red-300/60" />
+          </g>
+          
+          {/* Fruit 5 - top center */}
+          <g style={{ 
+            opacity: Math.max(0, Math.min(1, (stageProgress - 3.8) * 5)),
+            transform: `scale(${Math.max(0, Math.min(1, (stageProgress - 3.8) * 5))})`,
+            transformOrigin: '100px 26px'
+          }}>
+            <circle cx="100" cy="26" r="8" className="fill-red-500" />
+            <circle cx="98" cy="24" r="2.5" className="fill-red-300/60" />
+          </g>
+        </g>
+
+        {/* Prompt text when empty */}
+        {value === 0 && (
+          <text x="100" y="70" textAnchor="middle" className="fill-slate-500 text-[10px] font-medium">
+            Drag slider to grow
+          </text>
         )}
       </svg>
     </div>
