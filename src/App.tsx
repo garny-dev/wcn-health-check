@@ -71,11 +71,13 @@ const stages: Stage[] = [
 ]
 
 function App() {
-  const [selected, setSelected] = useState<number | null>(null)
+  const [sliderValue, setSliderValue] = useState(0)
   const [hoveredStage, setHoveredStage] = useState<number | null>(null)
   const [notes, setNotes] = useState('')
 
-  const progress = selected ? (selected / 4) * 100 : 0
+  // Map slider (0-12) to stage (null, 1, 2, 3, 4)
+  const selected = sliderValue === 0 ? null : Math.ceil(sliderValue / 3)
+  const progress = (sliderValue / 12) * 100
 
   return (
     <div className="min-h-screen relative overflow-hidden">
@@ -153,20 +155,17 @@ function App() {
             
             {/* Growing Tree + Slider */}
             <div className="bg-slate-800/40 rounded-2xl p-6 border border-slate-700/30 mb-6">
-              <GrowingTree stage={selected} />
+              <GrowingTree value={sliderValue} maxValue={12} />
               
               {/* Slider */}
               <div className="mt-6 px-4">
                 <input
                   type="range"
                   min="0"
-                  max="4"
+                  max="12"
                   step="1"
-                  value={selected || 0}
-                  onChange={(e) => {
-                    const val = parseInt(e.target.value)
-                    setSelected(val === 0 ? null : val)
-                  }}
+                  value={sliderValue}
+                  onChange={(e) => setSliderValue(parseInt(e.target.value))}
                   className="w-full h-2 bg-slate-700 rounded-full appearance-none cursor-pointer slider-thumb"
                 />
                 <div className="flex justify-between mt-2 text-xs font-medium">
@@ -188,7 +187,7 @@ function App() {
               {stages.map((stage) => (
                 <div
                   key={stage.level}
-                  onClick={() => setSelected(stage.level)}
+                  onClick={() => setSliderValue(stage.level * 3)}
                   onMouseEnter={() => setHoveredStage(stage.level)}
                   onMouseLeave={() => setHoveredStage(null)}
                   className={`
