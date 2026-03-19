@@ -1,13 +1,25 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { GrowingTree } from './GrowingTree'
-import { translations, languages, type Language } from './i18n'
+import { translations, languages, categoryIcons, questionPlantIcons, type Language } from './i18n'
+
+// Question IDs per category (static structure)
+const questionIds = [
+  [101, 102, 103, 104, 105],           // Registration & Governance
+  [201, 202, 203, 204, 205, 206],      // Human Resources
+  [301, 302, 303, 304],                // Strategic Planning
+  [401, 402, 403, 404],                // Finance & Accounting
+  [501, 502, 503, 504, 505],           // Commitment to People
+  [601, 602, 603, 604],                // Infrastructure
+  [701, 702, 703, 704],                // Donor Engagement
+  [801, 802, 803, 804],                // External Marketing
+]
 
 const stageStyles = [
-  { gradient: 'from-amber-700 via-amber-800 to-stone-700', bgGradient: 'bg-gradient-to-br from-amber-950/30 to-stone-950/40' },
-  { gradient: 'from-lime-600 via-green-600 to-emerald-700', bgGradient: 'bg-gradient-to-br from-lime-950/30 to-green-950/40' },
-  { gradient: 'from-emerald-500 via-green-500 to-teal-600', bgGradient: 'bg-gradient-to-br from-emerald-950/30 to-teal-950/40' },
-  { gradient: 'from-green-500 via-emerald-400 to-teal-400', bgGradient: 'bg-gradient-to-br from-green-950/30 to-emerald-950/40' },
+  { bgGradient: 'bg-gradient-to-br from-amber-950/30 to-stone-950/40' },
+  { bgGradient: 'bg-gradient-to-br from-lime-950/30 to-green-950/40' },
+  { bgGradient: 'bg-gradient-to-br from-emerald-950/30 to-teal-950/40' },
+  { bgGradient: 'bg-gradient-to-br from-green-950/30 to-emerald-950/40' },
 ]
 
 function App() {
@@ -18,19 +30,17 @@ function App() {
   const [langDropdownOpen, setLangDropdownOpen] = useState(false)
 
   const t = translations[lang]
-  const categories = t.categories
-  const stages = t.stages
-  
-  const category = categories[currentCategory]
-  const totalQuestions = category.questions.length
-  const answeredInCategory = category.questions.filter(q => answers[q.id]).length
+  const qIds = questionIds[currentCategory]
+  const categoryT = t.categories[currentCategory]
+  const totalQuestions = qIds.length
+  const answeredInCategory = qIds.filter(id => answers[id]).length
   const categoryProgress = (answeredInCategory / totalQuestions) * 100
-  const categoryScore = category.questions.reduce((sum, q) => sum + (answers[q.id] || 0), 0)
+  const categoryScore = qIds.reduce((sum, id) => sum + (answers[id] || 0), 0)
   const maxCategoryScore = totalQuestions * 4
   const categoryScorePercent = Math.round((categoryScore / maxCategoryScore) * 100)
   const allAnsweredInCategory = answeredInCategory === totalQuestions
 
-  const totalAllQuestions = categories.reduce((sum, c) => sum + c.questions.length, 0)
+  const totalAllQuestions = questionIds.reduce((sum, q) => sum + q.length, 0)
   const totalAnswered = Object.keys(answers).length
   const overallProgress = Math.round((totalAnswered / totalAllQuestions) * 100)
 
@@ -83,13 +93,14 @@ function App() {
             </div>
           </div>
           <div className="flex flex-wrap justify-center gap-1.5">
-            {categories.map((cat, idx) => {
-              const catAnswered = cat.questions.filter(q => answers[q.id]).length
-              const catComplete = catAnswered === cat.questions.length
+            {questionIds.map((qIdList, idx) => {
+              const catT = t.categories[idx]
+              const catAnswered = qIdList.filter(id => answers[id]).length
+              const catComplete = catAnswered === qIdList.length
               return (
-                <button key={cat.id} onClick={() => setCurrentCategory(idx)} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${idx === currentCategory ? 'bg-emerald-500/20 border-2 border-emerald-500 text-emerald-400' : catComplete ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400/80' : catAnswered > 0 ? 'bg-slate-800/80 border border-slate-600 text-slate-300' : 'bg-slate-800/60 border border-slate-700/50 text-slate-400 hover:bg-slate-700/60'}`}>
-                  <span>{cat.icon}</span>
-                  <span className="hidden md:inline">{cat.name}</span>
+                <button key={idx} onClick={() => setCurrentCategory(idx)} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${idx === currentCategory ? 'bg-emerald-500/20 border-2 border-emerald-500 text-emerald-400' : catComplete ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400/80' : catAnswered > 0 ? 'bg-slate-800/80 border border-slate-600 text-slate-300' : 'bg-slate-800/60 border border-slate-700/50 text-slate-400 hover:bg-slate-700/60'}`}>
+                  <span>{categoryIcons[idx]}</span>
+                  <span className="hidden md:inline">{catT.name}</span>
                   {catComplete && <span className="text-emerald-400">✓</span>}
                 </button>
               )
@@ -102,9 +113,9 @@ function App() {
           <div className="bg-slate-900/60 backdrop-blur-xl rounded-t-2xl p-4 border border-slate-700/50 border-b-0">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-xl shadow-lg">{category.icon}</div>
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-xl shadow-lg">{categoryIcons[currentCategory]}</div>
                 <div>
-                  <h2 className="text-lg font-bold text-white">{category.name}</h2>
+                  <h2 className="text-lg font-bold text-white">{categoryT.name}</h2>
                   <p className="text-slate-400 text-xs">{answeredInCategory}/{totalQuestions} {t.completed}</p>
                 </div>
               </div>
@@ -119,25 +130,27 @@ function App() {
           </div>
 
           <div className="space-y-0">
-            {category.questions.map((question, qIdx) => {
-              const currentAnswer = answers[question.id] || 0
+            {qIds.map((questionId, qIdx) => {
+              const questionT = categoryT.questions[qIdx]
+              const plantIcon = questionPlantIcons[currentCategory][qIdx]
+              const currentAnswer = answers[questionId] || 0
               return (
-                <div key={question.id} className={`bg-slate-900/60 backdrop-blur-xl p-4 border-x border-slate-700/50 ${qIdx === category.questions.length - 1 ? '' : 'border-b border-slate-700/30'}`}>
+                <div key={questionId} className={`bg-slate-900/60 backdrop-blur-xl p-4 border-x border-slate-700/50 ${qIdx === qIds.length - 1 ? '' : 'border-b border-slate-700/30'}`}>
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="text-lg">{question.plantIcon}</span>
+                    <span className="text-lg">{plantIcon}</span>
                     <div className="flex-1">
-                      <span className="text-sm font-semibold text-white">{question.title}</span>
-                      <span className="text-slate-500 text-xs ml-2">— {question.desc}</span>
+                      <span className="text-sm font-semibold text-white">{questionT.title}</span>
+                      <span className="text-slate-500 text-xs ml-2">— {questionT.desc}</span>
                     </div>
                     {currentAnswer > 0 && <span className="text-emerald-400 text-xs font-medium px-2 py-0.5 bg-emerald-500/10 rounded-full">{t.level} {currentAnswer}</span>}
                   </div>
                   <div className="grid grid-cols-5 gap-2">
-                    {stages.map((stage, idx) => {
+                    {t.stages.map((stage, idx) => {
                       const level = idx + 1
                       const style = stageStyles[idx]
                       const isSelected = currentAnswer === level
                       return (
-                        <div key={level} onClick={() => handleSelect(question.id, level)} className={`relative cursor-pointer rounded-lg p-2 transition-all duration-200 ${style.bgGradient} border ${isSelected ? 'border-yellow-400 shadow-md shadow-yellow-500/20 scale-[1.03]' : 'border-slate-700/50 hover:border-slate-600'}`}>
+                        <div key={level} onClick={() => handleSelect(questionId, level)} className={`relative cursor-pointer rounded-lg p-2 transition-all duration-200 ${style.bgGradient} border ${isSelected ? 'border-yellow-400 shadow-md shadow-yellow-500/20 scale-[1.03]' : 'border-slate-700/50 hover:border-slate-600'}`}>
                           <div className="flex items-center gap-1 mb-1">
                             <span className="text-sm">{['🌱', '🌿', '🌳', '🍎'][idx]}</span>
                             <span className={`text-xs font-bold ${isSelected ? 'text-yellow-400' : 'text-white'}`}>{level}</span>
@@ -153,7 +166,7 @@ function App() {
                     </div>
                   </div>
                   {currentAnswer > 0 && (
-                    <textarea value={notes[question.id] || ''} onChange={(e) => setNotes({ ...notes, [question.id]: e.target.value })} placeholder={t.notesPlaceholder} rows={1} className="w-full mt-2 px-3 py-1.5 rounded-lg bg-slate-800/40 border border-slate-700/30 text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all resize-none text-xs" />
+                    <textarea value={notes[questionId] || ''} onChange={(e) => setNotes({ ...notes, [questionId]: e.target.value })} placeholder={t.notesPlaceholder} rows={1} className="w-full mt-2 px-3 py-1.5 rounded-lg bg-slate-800/40 border border-slate-700/30 text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all resize-none text-xs" />
                   )}
                 </div>
               )
@@ -162,12 +175,12 @@ function App() {
 
           <div className="bg-slate-900/60 backdrop-blur-xl rounded-b-2xl p-4 border border-slate-700/50 border-t-0">
             <div className="flex items-center justify-between">
-              <div className="text-sm text-slate-400">{allAnsweredInCategory ? <span className="text-emerald-400">{t.categoryComplete}</span> : <span>{t.completeAll} ({totalQuestions})</span>}</div>
+              <div className="text-sm text-slate-400">{allAnsweredInCategory ? <span className="text-emerald-400">{t.categoryComplete}</span> : <span>{t.completeAll}</span>}</div>
               <div className="flex gap-2">
-                {category.questions.map((q) => (
-                  <div key={q.id} className="text-center">
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm ${answers[q.id] ? 'bg-emerald-500/20' : 'bg-slate-800/50'}`}>{q.plantIcon}</div>
-                    <span className="text-[9px] text-slate-500">{answers[q.id] || '-'}</span>
+                {qIds.map((qId, qIdx) => (
+                  <div key={qId} className="text-center">
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm ${answers[qId] ? 'bg-emerald-500/20' : 'bg-slate-800/50'}`}>{questionPlantIcons[currentCategory][qIdx]}</div>
+                    <span className="text-[9px] text-slate-500">{answers[qId] || '-'}</span>
                   </div>
                 ))}
               </div>
@@ -176,7 +189,7 @@ function App() {
 
           <div className="flex justify-between mt-4">
             <button onClick={() => setCurrentCategory(Math.max(0, currentCategory - 1))} disabled={currentCategory === 0} className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${currentCategory === 0 ? 'bg-slate-800/40 text-slate-600 cursor-not-allowed' : 'bg-slate-800/80 text-slate-300 hover:bg-slate-700 border border-slate-700/50'}`}>{t.previous}</button>
-            <button onClick={() => setCurrentCategory(Math.min(categories.length - 1, currentCategory + 1))} disabled={currentCategory === categories.length - 1} className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${currentCategory === categories.length - 1 ? 'bg-slate-800/40 text-slate-600 cursor-not-allowed' : 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/25 hover:scale-105'}`}>{t.next}</button>
+            <button onClick={() => setCurrentCategory(Math.min(questionIds.length - 1, currentCategory + 1))} disabled={currentCategory === questionIds.length - 1} className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${currentCategory === questionIds.length - 1 ? 'bg-slate-800/40 text-slate-600 cursor-not-allowed' : 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/25 hover:scale-105'}`}>{t.next}</button>
           </div>
         </div>
 
